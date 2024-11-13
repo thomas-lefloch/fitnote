@@ -1,0 +1,30 @@
+<resources>
+    <string name="app_name">fitnote_v2</string>
+
+    <string name="workout_selector_title">My Workouts</string>
+    <string name="button_add_workout">+ Add a new workout</string>
+    <string name="button_start_workout">Let\'s Go</string>
+    <string name="exercises_count">%1$d Exercises</string>
+    <string name="last_done">Last done: %1$s</string>
+    <string name="never">Never</string>
+    <string name="duration_estimate_minutes">~ %1$d minutes</string>
+    <string name="no_workouts">You don\'t have any workout yet. Create on by clicking the button below</string>
+
+    <string name="dialog_title_new_workout">Your workout</string>
+
+    <string name="delete_workout_confirmation_title">Delete Workout</string>
+    <string name="delete_workout_confirmation_message">Are you sure you want to delete %1$s ? This action is irreversible. You will lose that data permanently.</string>
+    <string name="delete">Delete</string>
+
+    <string name="label_workout_title">Workout name</string>
+    <string name="label_description">Description</string>
+
+    <string name="more_options">More options</string>
+    <string name="edit_workout">Edit workout</string>
+    <string name="duplicate_workout">Duplicate workout</string>
+    <string name="delete_workout">Delete workout</string>
+
+    <string name="cancel">Cancel</string>
+    <string name="confirm">Confirm</string>
+
+</resources>

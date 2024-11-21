@@ -1,5 +1,6 @@
 package com.example.fitnote_v2
 
+import android.content.Intent
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
@@ -52,12 +53,17 @@ class MainActivity : ComponentActivity() {
                     WorkoutSelector(
                         Modifier.padding(appPadding),
                         workouts,
-                        onChooseWorkout = { workouts += it },
+                        onChooseWorkout = { openWorkoutActivity(it) },
                         onCreateWorkout = { workouts += it },
                         onDeleteWorkout = { workouts -= it }
                     )
                 }
             }
         }
+    }
+
+    fun openWorkoutActivity (   workout: WorkoutProgram) {
+        val intent = Intent(this, WorkoutActivity::class.java)
+        startActivity(intent)
     }
 }

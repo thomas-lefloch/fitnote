@@ -66,7 +66,7 @@ fun WorkoutSelector(
     ) {
         Text(
             text = stringResource(R.string.workout_selector_title),
-            fontSize = 28.sp,
+            style = MaterialTheme.typography.headlineMedium,
             fontWeight = FontWeight.Bold,
             color = MaterialTheme.colorScheme.onBackground,
             modifier = Modifier.padding(vertical = 8.dp)
@@ -87,11 +87,11 @@ fun WorkoutSelector(
                 }
             } else {
                 items(workouts.size) { i ->
-                    WorkoutCard(workouts[i], onChooseWorkout = onChooseWorkout, onEditWorkout = {
-                        workoutToEdit = workouts[i]
-                    }, onDeleteWorkout = {
-                        workoutToDelete = workouts[i]
-                    })
+                    WorkoutCard(workouts[i],
+                        onChooseWorkout = onChooseWorkout,
+                        onEditWorkout = { workoutToEdit = workouts[i] },
+                        onDeleteWorkout = { workoutToDelete = workouts[i] }
+                    )
                     Spacer(modifier = Modifier.height(12.dp))
                 }
             }
@@ -129,8 +129,8 @@ fun WorkoutSelector(
     } else if (workoutToEdit != null) {
         WorkoutDialog(
             onDismiss = { workoutToEdit = null },
-            onConfirmWorkout = {/*TODO: update workout waiting for database impl*/; workoutToEdit =
-                null
+            onConfirmWorkout = {/*TODO: update workout waiting for database impl*/
+                workoutToEdit = null
             },
             workout = workoutToEdit
         )
@@ -298,8 +298,7 @@ fun WorkoutDialog(
         onConfirmRequest = {
             val newWorkout =
                 workout?.copy(name = name, description = description) ?: WorkoutProgram(
-                    name = name,
-                    description = description
+                    name = name, description = description
                 )
 
             onConfirmWorkout(newWorkout)

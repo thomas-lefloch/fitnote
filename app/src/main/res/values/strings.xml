@@ -27,4 +27,16 @@
     <string name="cancel">Cancel</string>
     <string name="confirm">Confirm</string>
 
+    <string name="expanded">Expanded</string>
+    <string name="collapsed">Collapsed</string>
+
+    <string name="done">Done</string>
+    <string name="weight">Weight</string>
+    <string name="rest">Rest</string>
+    <string name="reps">Reps</string>
+
+    <string name="goal">%3$s * %1$s-%2$s reps with %4$s sec rest</string>
+
+
+
 </resources>

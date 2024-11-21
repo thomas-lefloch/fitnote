@@ -12,7 +12,19 @@ data class Exercise(
     val name: String,
     val description: String,
     val setCount: Int,
-    val defaultSet: Set
+    val goal: Goal,
+    val sets: List<Set>
+)
+
+data class Goal (
+    val repCount: Range,
+    val weight: Int,
+    val rest: Int
+)
+
+data class Range (
+    val min: Int,
+    val max: Int
 )
 
 

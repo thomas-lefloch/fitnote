@@ -4,29 +4,24 @@ data class WorkoutProgram(
     val id: String = "",
     val name: String,
     val description: String,
-    val exercises: List<Exercise> = emptyList(),
+    var exercises: List<Exercise> = emptyList(),
 )
 
 data class Exercise(
     val id: String = "",
     val name: String,
-    val description: String,
-    val setCount: Int,
+    val note: String,
     val goal: Goal,
-    val sets: List<Set>
+    val sets: List<Set> = emptyList()
 )
 
 data class Goal (
-    val repCount: Range,
+    val repMin: Int,
+    val repMax: Int,
+    val setCount: Int,
     val weight: Int,
     val rest: Int
 )
-
-data class Range (
-    val min: Int,
-    val max: Int
-)
-
 
 // TODO: implement theses
 fun WorkoutProgram.calculateEstimatedDuration(): Int {

@@ -25,24 +25,25 @@ class MainActivity : ComponentActivity() {
         enableEdgeToEdge()
         setContent {
             Fitnote_v2Theme {
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
-                    var workouts by remember {
-                        mutableStateOf(
-                            listOf(
-                                WorkoutProgram(
-                                    name = "Arms & Torso",
-                                    description = "Complete upper body workout focusing on strength and definition",
-                                    exercises = emptyList(),
-                                ),
-                                WorkoutProgram(
-                                    name = "Legs",
-                                    description = "Complete Lower body workout focusing on strength and definition",
-                                    exercises = emptyList(),
-                                )
+
+                var workouts by remember {
+                    mutableStateOf(
+                        listOf(
+                            WorkoutProgram(
+                                name = "Arms & Torso",
+                                description = "Complete upper body workout focusing on strength and definition",
+                                exercises = emptyList(),
+                            ),
+                            WorkoutProgram(
+                                name = "Legs",
+                                description = "Complete Lower body workout focusing on strength and definition",
+                                exercises = emptyList(),
                             )
                         )
-                    }
+                    )
+                }
 
+                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
                     val appPadding = PaddingValues(
                         top = innerPadding.calculateTopPadding(),
                         bottom = innerPadding.calculateBottomPadding(),
@@ -62,7 +63,7 @@ class MainActivity : ComponentActivity() {
         }
     }
 
-    fun openWorkoutActivity (   workout: WorkoutProgram) {
+    fun openWorkoutActivity (workout: WorkoutProgram) {
         val intent = Intent(this, WorkoutActivity::class.java)
         startActivity(intent)
     }

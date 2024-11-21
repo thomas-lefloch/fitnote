@@ -62,7 +62,7 @@ fun WorkoutSelector(
     var workoutToEdit by remember { mutableStateOf<WorkoutProgram?>(null) }
 
     Column(
-        modifier = modifier.fillMaxSize(), verticalArrangement = Arrangement.spacedBy(16.dp)
+        modifier = modifier.fillMaxSize(),
     ) {
         Text(
             text = stringResource(R.string.workout_selector_title),

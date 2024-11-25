@@ -12,7 +12,7 @@ data class Exercise(
     val name: String,
     val note: String,
     val goal: Goal,
-    val sets: List<Set> = emptyList()
+    var sets: List<Set> = emptyList()
 )
 
 data class Goal (

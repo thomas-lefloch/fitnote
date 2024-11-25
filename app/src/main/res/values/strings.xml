@@ -37,6 +37,8 @@
 
     <string name="goal">%3$s * %1$s-%2$s reps with %4$s sec rest</string>
     <string name="button_add_exercise">+ Add a new exercise</string>
+    <string name="button_add_set">+ Add a new set</string>
+
 
     <string name="create_exercise_dialog_title">Create Exercise</string>
     <string name="create">Create</string>

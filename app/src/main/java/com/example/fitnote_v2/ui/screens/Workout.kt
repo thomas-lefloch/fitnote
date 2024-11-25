@@ -1,5 +1,6 @@
 package com.example.fitnote_v2.ui.screens
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -22,6 +23,7 @@ import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
+import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.material3.TextField
 import androidx.compose.runtime.Composable
@@ -32,6 +34,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.input.ImeAction
@@ -45,6 +48,9 @@ import com.example.fitnote_v2.data.Goal
 import com.example.fitnote_v2.data.Set
 import com.example.fitnote_v2.data.WorkoutProgram
 import com.example.fitnote_v2.ui.components.DefaultDialog
+import java.util.Date
+
+val setCompletedColor = Color(0xFFA0B397)
 
 @Composable
 fun Workout(
@@ -64,7 +70,6 @@ fun Workout(
 
         LazyColumn(
             modifier = Modifier.weight(1f)
-//            modifier = Modifier.background(MaterialTheme.colorScheme.surfaceVariant)
         ) {
             items(workout.exercises.size) { i ->
                 ExerciseCard(exercise = workout.exercises[i])
@@ -104,13 +109,20 @@ fun Workout(
 fun ExerciseCard(
     exercise: Exercise, modifier: Modifier = Modifier
 ) {
+    // FIXME: isExpanded's value is reset when is goes out of screen
     var isExpanded by remember { mutableStateOf(true) }
+    // FIXME: data is reset when the component goes out of screen,  user data will be correclty manage when I start implementing the database
+    var sets by remember { mutableStateOf(exercise.sets) }
 
     Card(
         modifier = modifier.fillMaxWidth(),
-//        colors = CardDefaults.cardColors(containerColor = MaterialTheme.colorScheme.surface)
+//        colors = CardDefaults.cardColors(
+//            containerColor = MaterialTheme.colorScheme.surface,
+//            contentColor = MaterialTheme.colorScheme.onSurface
+//        )
     ) {
-        Column(modifier = Modifier.padding(vertical = 8.dp, horizontal = 16.dp)) {
+        val horizontalCardPadding = 16.dp
+        Column(modifier = Modifier.padding(vertical = 8.dp, horizontal = horizontalCardPadding)) {
 
             ExpandableCardHeader(
                 exercise.name,
@@ -138,7 +150,6 @@ fun ExerciseCard(
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 TableTitle(stringResource(R.string.reps), modifier = Modifier.weight(1f))
                 TableTitle(stringResource(R.string.weight), modifier = Modifier.weight(1f))
                 TableTitle(stringResource(R.string.rest), modifier = Modifier.weight(1f))
@@ -147,39 +158,63 @@ fun ExerciseCard(
 
             HorizontalDivider(thickness = .5.dp)
 
-            exercise.sets.forEach { set ->
+            sets.forEachIndexed { i, s ->
                 Row(
-                    modifier = Modifier.fillMaxWidth(),
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .layout { measurable, constraints ->
+                            val placeable = measurable.measure(
+                                constraints.copy(
+                                    maxWidth = constraints.maxWidth + horizontalCardPadding.roundToPx()
+                                )
+                            )
+                            layout(placeable.width, placeable.height) {
+                                placeable.place(0, 0)
+                            }
+                        }
+                        .background(if (s.completedAt == null) Color.Transparent else setCompletedColor),
                     horizontalArrangement = Arrangement.SpaceBetween,
                     verticalAlignment = Alignment.CenterVertically
+
                 ) {
                     Text(
-                        "${set.repCount}",
+                        "${s.repCount}",
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center
                     )
                     Text(
-                        "${set.weight}",
+                        "${s.weight}",
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center
 
                     )
                     Text(
-                        "${set.rest}",
+                        "${s.rest}",
                         modifier = Modifier.weight(1f),
                         textAlign = TextAlign.Center
                     )
                     IconButton(
-                        onClick = {}, //TODO: implement on done
-                        modifier = Modifier.width(48.dp) //TODO: fix magic value
+                        onClick = {
+                            sets = sets.toMutableList().apply {
+                                this[i] = s.copy(completedAt = Date(System.currentTimeMillis()))
+                            }
+                        },
+                        modifier = Modifier.width(48.dp)
                     ) {
                         Icon(
                             imageVector = Icons.Default.Check,
                             contentDescription = stringResource(R.string.done),
-                            tint = Color(0xFFA0B397), // TODO: put in theme
                         )
                     }
                 }
+            }
+
+            OutlinedButton(
+                onClick = { sets += exercise.sets[exercise.sets.size - 1].copy(completedAt = null) },
+                modifier = Modifier.fillMaxWidth(),
+                shape = MaterialTheme.shapes.small,
+            ) {
+                Text(stringResource(R.string.button_add_set))
             }
         }
     }
@@ -267,7 +302,6 @@ fun ExerciseCreationDialog(
     var setCountError by remember { mutableStateOf(false) }
     var restError by remember { mutableStateOf(false) }
 
-    // Validate inputs
     val isValidInput = name.isNotBlank() &&
             repMin.isNotBlank() && repMin.toIntOrNull() != null &&
             repMax.isNotBlank() && repMax.toIntOrNull() != null &&
@@ -280,8 +314,7 @@ fun ExerciseCreationDialog(
                 repMin = repMin.toInt(),
                 repMax = repMax.toInt(),
                 setCount = setCount.toInt(),
-                weight = weight.toIntOrNull()
-                    ?: 0, // TODO: implement proper support for non weight exercise
+                weight = weight.toIntOrNull() ?: 0, // TODO: proper support for bodyweight exercise
                 rest = rest.toInt()
             )
             onConfirm(Exercise(name = name, note = note, goal = goal))
@@ -301,7 +334,6 @@ fun ExerciseCreationDialog(
                 .padding(vertical = 8.dp),
             verticalArrangement = Arrangement.spacedBy(8.dp)
         ) {
-            // Exercise Name
             TextField(
                 value = name,
                 onValueChange = { name = it },
@@ -311,7 +343,6 @@ fun ExerciseCreationDialog(
                 singleLine = true
             )
 
-            // Optional Note
             TextField(
                 value = note,
                 onValueChange = { note = it },
@@ -321,7 +352,6 @@ fun ExerciseCreationDialog(
                 singleLine = true
             )
 
-            // Goal Inputs
             Row(modifier = Modifier.fillMaxWidth(), Arrangement.spacedBy(8.dp)) {
                 TextField(
                     value = repMin,
@@ -373,7 +403,6 @@ fun ExerciseCreationDialog(
                     singleLine = true
                 )
 
-                // Optional Weight
                 TextField(
                     value = weight,
                     onValueChange = { weight = it },

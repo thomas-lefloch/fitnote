@@ -7,6 +7,7 @@ import androidx.activity.enableEdgeToEdge
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Scaffold
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -14,7 +15,8 @@ import com.example.fitnote_v2.data.Exercise
 import com.example.fitnote_v2.data.Goal
 import com.example.fitnote_v2.data.Set
 import com.example.fitnote_v2.data.WorkoutProgram
-import com.example.fitnote_v2.ui.screens.Workout
+//import com.example.fitnote_v2.ui.screens.Workout
+import com.example.fitnote_v2.ui.screens.Workout.Workout
 import com.example.fitnote_v2.ui.theme.Fitnote_v2Theme
 
 class WorkoutActivity : ComponentActivity() {
@@ -99,7 +101,11 @@ class WorkoutActivity : ComponentActivity() {
                     )
                 )
 
-                Scaffold(modifier = Modifier.fillMaxSize()) { innerPadding ->
+                Scaffold(
+                    modifier = Modifier.fillMaxSize(),
+                    containerColor = MaterialTheme.colorScheme.surfaceVariant,
+                    contentColor = MaterialTheme.colorScheme.onSurfaceVariant
+                ) { innerPadding ->
                     val appPadding = PaddingValues(
                         top = innerPadding.calculateTopPadding(),
                         bottom = innerPadding.calculateBottomPadding(),
@@ -107,7 +113,10 @@ class WorkoutActivity : ComponentActivity() {
                         end = 16.dp
                     )
 
-                    Workout(sampleWorkout, Modifier.padding(appPadding), onCreateExercise= {sampleWorkout.exercises += it})
+                    Workout(
+                        sampleWorkout,
+                        Modifier.padding(appPadding),
+                        onCreateExercise = { sampleWorkout.exercises += it })
                 }
             }
         }

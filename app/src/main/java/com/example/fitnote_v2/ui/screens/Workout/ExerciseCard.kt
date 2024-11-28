@@ -2,9 +2,11 @@ package com.example.fitnote_v2.ui.screens.Workout
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -15,12 +17,14 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -28,21 +32,20 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.layout.layout
 import androidx.compose.ui.res.stringResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.fitnote_v2.R
 import com.example.fitnote_v2.data.Exercise
+import com.example.fitnote_v2.data.Goal
 import com.example.fitnote_v2.data.Set
 import java.util.Date
 
-
-private val setCompletedColor = Color(0xFFA0B397)
 
 @Composable
 fun ExerciseCard(
@@ -62,7 +65,7 @@ fun ExerciseCard(
             contentColor = MaterialTheme.colorScheme.onSurface
         )
     ) {
-        Column(modifier = Modifier.padding(vertical = 8.dp,horizontal = horizontalCardPadding)) {
+        Column(modifier = Modifier.padding(vertical = 8.dp, horizontal = horizontalCardPadding)) {
 
             ExpandableCardHeader(
                 exercise.name,
@@ -100,7 +103,7 @@ fun ExerciseCard(
             HorizontalDivider(thickness = .5.dp)
 
             sets.forEachIndexed { i, set ->
-                TableRow(set, horizontalCardPadding, onSetCompletion = {
+                SetRow(set, horizontalCardPadding, onSetCompletion = {
                     sets = sets.toMutableList().apply {
                         this[i] = set.copy(completedAt = Date(System.currentTimeMillis()))
                     }
@@ -182,7 +185,7 @@ private fun TableTitle(text: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun TableRow(set: Set, horizontalCardPadding: Dp, onSetCompletion: (Set) -> Unit) {
+private fun SetRow(set: Set, horizontalCardPadding: Dp, onSetCompletion: (Set) -> Unit) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -196,16 +199,17 @@ private fun TableRow(set: Set, horizontalCardPadding: Dp, onSetCompletion: (Set)
                     placeable.place(0, 0)
                 }
             }
-            .background(if (set.completedAt == null) Color.Transparent else setCompletedColor)
+            .background(if (set.completedAt == null) Color.Transparent else MaterialTheme.colorScheme.surfaceVariant)
             .padding(horizontal = horizontalCardPadding),
         horizontalArrangement = Arrangement.SpaceBetween,
         verticalAlignment = Alignment.CenterVertically
 
     ) {
-        Text(
-            "${set.repCount}",
+        IncrementControls(
+            set.repCount,
+            onValueChange = {},
+            increments = listOf(1, 5),
             modifier = Modifier.weight(1f),
-            textAlign = TextAlign.Center
         )
         Text(
             "${set.weight}",
@@ -227,5 +231,56 @@ private fun TableRow(set: Set, horizontalCardPadding: Dp, onSetCompletion: (Set)
                 contentDescription = stringResource(R.string.done),
             )
         }
+    }
+}
+
+@Composable
+private fun IncrementControls(
+    value: Int,
+    onValueChange: (Int) -> Unit,
+    increments: List<Int>,
+    modifier: Modifier = Modifier
+) {
+    var controlsShown by remember { mutableStateOf(false) }
+    Box(modifier, Alignment.Center) {
+        TextButton(onClick = { controlsShown = true }, modifier.fillMaxWidth()) {
+            Text(value.toString(), textAlign = TextAlign.Center)
+        }
+        DropdownMenu(expanded = controlsShown, onDismissRequest = { controlsShown = false }) {
+            increments.forEach { increment ->
+                Row(verticalAlignment = Alignment.CenterVertically) {
+                    TextButton(onClick = { onValueChange(value - increment) }) { Text("-") }
+                    Text(increment.toString())
+                    TextButton(onClick = { onValueChange(value + increment) }) { Text("+") }
+                }
+            }
+
+        }
+    }
+}
+
+@Preview
+@Composable
+fun ExerciseCardPreview() {
+    MaterialTheme {
+        ExerciseCard(
+            Exercise(
+                id = "EX004",
+                name = "Pull-Ups",
+                note = "Full extension at bottom, chin over bar at top",
+                goal = Goal(
+                    repMin = 6,
+                    repMax = 10,
+                    setCount = 3,
+                    weight = 0,
+                    rest = 90
+                ),
+                sets = listOf(
+                    Set(repCount = 8, weight = 0, rest = 90),
+                    Set(repCount = 7, weight = 0, rest = 90),
+                    Set(repCount = 6, weight = 0, rest = 90)
+                )
+            )
+        )
     }
 }

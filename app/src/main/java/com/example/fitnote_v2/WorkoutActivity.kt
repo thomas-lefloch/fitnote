@@ -42,9 +42,9 @@ class WorkoutActivity : ComponentActivity() {
                                 rest = 90
                             ),
                             sets = listOf(
-                                Set(repCount = 10, weight = 95, rest = 90),
-                                Set(repCount = 10, weight = 115, rest = 90),
-                                Set(repCount = 8, weight = 135, rest = 120),
+                                Set(repCount = 10, weight = 95f, rest = 90),
+                                Set(repCount = 10, weight = 115f, rest = 90),
+                                Set(repCount = 8, weight = 135f, rest = 120),
                             )
                         ),
                         Exercise(
@@ -59,9 +59,9 @@ class WorkoutActivity : ComponentActivity() {
                                 rest = 120
                             ),
                             sets = listOf(
-                                Set(repCount = 10, weight = 135, rest = 90),
-                                Set(repCount = 8, weight = 155, rest = 120),
-                                Set(repCount = 6, weight = 185, rest = 150)
+                                Set(repCount = 10, weight = 135f, rest = 90),
+                                Set(repCount = 8, weight = 155f, rest = 120),
+                                Set(repCount = 6, weight = 185f, rest = 150)
                             )
                         ),
                         Exercise(
@@ -76,9 +76,9 @@ class WorkoutActivity : ComponentActivity() {
                                 rest = 180
                             ),
                             sets = listOf(
-                                Set(repCount = 8, weight = 185, rest = 120),
-                                Set(repCount = 6, weight = 225, rest = 180),
-                                Set(repCount = 5, weight = 225, rest = 180)
+                                Set(repCount = 8, weight = 185f, rest = 120),
+                                Set(repCount = 6, weight = 225f, rest = 180),
+                                Set(repCount = 5, weight = 225f, rest = 180)
                             )
                         ),
                         Exercise(
@@ -93,9 +93,9 @@ class WorkoutActivity : ComponentActivity() {
                                 rest = 90
                             ),
                             sets = listOf(
-                                Set(repCount = 8, weight = 0, rest = 90),
-                                Set(repCount = 7, weight = 0, rest = 90),
-                                Set(repCount = 6, weight = 0, rest = 90)
+                                Set(repCount = 8, weight = 0f, rest = 90),
+                                Set(repCount = 7, weight = 0f, rest = 90),
+                                Set(repCount = 6, weight = 0f, rest = 90)
                             )
                         )
                     )

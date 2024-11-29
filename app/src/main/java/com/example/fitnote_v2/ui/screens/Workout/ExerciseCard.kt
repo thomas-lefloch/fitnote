@@ -6,7 +6,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
@@ -205,22 +204,23 @@ private fun SetRow(set: Set, horizontalCardPadding: Dp, onSetCompletion: (Set) -
         verticalAlignment = Alignment.CenterVertically
 
     ) {
-        IncrementControls(
-            set.repCount,
-            onValueChange = {},
-            increments = listOf(1, 5),
+        IncrementalControls(
+            set.repCount.toFloat(),
+            onValueChange = {/*TODO: implement me (after data pass)*/},
+            increments = listOf(1f, 5f),
             modifier = Modifier.weight(1f),
         )
-        Text(
-            "${set.weight}",
+        IncrementalControls(
+            set.weight,
+            onValueChange = {/*TODO: implement me (after data pass)*/},
+            increments = listOf(1f, 2.5f, 5f),
             modifier = Modifier.weight(1f),
-            textAlign = TextAlign.Center
-
         )
-        Text(
-            "${set.rest}",
+        IncrementalControls(
+            set.rest.toFloat(),
+            onValueChange = {/*TODO: implement me (after data pass)*/},
+            increments = listOf(10f, 30f),
             modifier = Modifier.weight(1f),
-            textAlign = TextAlign.Center
         )
         IconButton(
             onClick = { onSetCompletion(set) },
@@ -235,10 +235,10 @@ private fun SetRow(set: Set, horizontalCardPadding: Dp, onSetCompletion: (Set) -
 }
 
 @Composable
-private fun IncrementControls(
-    value: Int,
-    onValueChange: (Int) -> Unit,
-    increments: List<Int>,
+private fun IncrementalControls(
+    value: Float,
+    onValueChange: (Float) -> Unit,
+    increments: List<Float>,
     modifier: Modifier = Modifier
 ) {
     var controlsShown by remember { mutableStateOf(false) }
@@ -276,9 +276,9 @@ fun ExerciseCardPreview() {
                     rest = 90
                 ),
                 sets = listOf(
-                    Set(repCount = 8, weight = 0, rest = 90),
-                    Set(repCount = 7, weight = 0, rest = 90),
-                    Set(repCount = 6, weight = 0, rest = 90)
+                    Set(repCount = 8, weight = 0f, rest = 90),
+                    Set(repCount = 7, weight = 0f, rest = 90),
+                    Set(repCount = 6, weight = 0f, rest = 90)
                 )
             )
         )

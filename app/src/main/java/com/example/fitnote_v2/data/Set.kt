@@ -4,7 +4,7 @@ import java.util.Date
 
 data class Set (
     val repCount: Int,
-    val weight: Int,
+    val weight: Float,
     val rest: Int,
     var completedAt: Date? = null
 )

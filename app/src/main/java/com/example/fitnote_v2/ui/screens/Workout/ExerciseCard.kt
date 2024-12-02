@@ -2,7 +2,6 @@ package com.example.fitnote_v2.ui.screens.Workout
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,14 +15,13 @@ import androidx.compose.material.icons.filled.Check
 import androidx.compose.material.icons.filled.KeyboardArrowDown
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
-import androidx.compose.material3.DropdownMenu
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.IconButton
+import androidx.compose.material3.IconButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
-import androidx.compose.material3.TextButton
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -43,6 +41,7 @@ import com.example.fitnote_v2.R
 import com.example.fitnote_v2.data.Exercise
 import com.example.fitnote_v2.data.Goal
 import com.example.fitnote_v2.data.Set
+import com.example.fitnote_v2.ui.components.IncrementalControls
 import java.util.Date
 
 
@@ -52,7 +51,7 @@ fun ExerciseCard(
 ) {
     // FIXME: isExpanded's value is reset when is goes out of screen
     var isExpanded by remember { mutableStateOf(true) }
-    // FIXME: data is reset when the component goes out of screen,  user data will be correclty manage when I start implementing the database
+    // FIXME: data is reset when the component goes out of screen,  user data will be correctly manage when I start implementing the database
     var sets by remember { mutableStateOf(exercise.sets) }
 
     val horizontalCardPadding = 16.dp
@@ -102,11 +101,14 @@ fun ExerciseCard(
             HorizontalDivider(thickness = .5.dp)
 
             sets.forEachIndexed { i, set ->
-                SetRow(set, horizontalCardPadding, onSetCompletion = {
-                    sets = sets.toMutableList().apply {
-                        this[i] = set.copy(completedAt = Date(System.currentTimeMillis()))
+                SetRow(set, horizontalCardPadding,
+                    onSetModification = { sets = sets.toMutableList().apply { this[i] = it } },
+                    onSetCompletion = {
+                        sets = sets.toMutableList().apply {
+                            this[i] = set.copy(completedAt = Date(System.currentTimeMillis()))
+                        }
                     }
-                })
+                )
             }
 
             OutlinedButton(
@@ -184,7 +186,12 @@ private fun TableTitle(text: String, modifier: Modifier = Modifier) {
 }
 
 @Composable
-private fun SetRow(set: Set, horizontalCardPadding: Dp, onSetCompletion: (Set) -> Unit) {
+private fun SetRow(
+    set: Set,
+    horizontalCardPadding: Dp,
+    onSetModification: (Set) -> Unit,
+    onSetCompletion: (Set) -> Unit
+) {
     Row(
         modifier = Modifier
             .fillMaxWidth()
@@ -205,56 +212,38 @@ private fun SetRow(set: Set, horizontalCardPadding: Dp, onSetCompletion: (Set) -
 
     ) {
         IncrementalControls(
-            set.repCount.toFloat(),
-            onValueChange = {/*TODO: implement me (after data pass)*/},
-            increments = listOf(1f, 5f),
+            set.repCount,
+            onValueChange = { onSetModification(set.copy(repCount = it)) },
+            increments = listOf(1, 5),
             modifier = Modifier.weight(1f),
+            enabled = set.completedAt == null
         )
         IncrementalControls(
             set.weight,
-            onValueChange = {/*TODO: implement me (after data pass)*/},
+            onValueChange = { onSetModification(set.copy(weight = it)) },
             increments = listOf(1f, 2.5f, 5f),
             modifier = Modifier.weight(1f),
+            enabled = set.completedAt == null
+
         )
         IncrementalControls(
-            set.rest.toFloat(),
-            onValueChange = {/*TODO: implement me (after data pass)*/},
-            increments = listOf(10f, 30f),
+            set.rest,
+            onValueChange = { onSetModification(set.copy(rest = it)) },
+            increments = listOf(10, 30),
             modifier = Modifier.weight(1f),
+            enabled = set.completedAt == null
+
         )
         IconButton(
             onClick = { onSetCompletion(set) },
-            modifier = Modifier.width(48.dp)
+            modifier = Modifier.width(48.dp),
+            enabled = set.completedAt == null,
+            colors = IconButtonDefaults.iconButtonColors(contentColor = MaterialTheme.colorScheme.onSurfaceVariant)
         ) {
             Icon(
                 imageVector = Icons.Default.Check,
                 contentDescription = stringResource(R.string.done),
             )
-        }
-    }
-}
-
-@Composable
-private fun IncrementalControls(
-    value: Float,
-    onValueChange: (Float) -> Unit,
-    increments: List<Float>,
-    modifier: Modifier = Modifier
-) {
-    var controlsShown by remember { mutableStateOf(false) }
-    Box(modifier, Alignment.Center) {
-        TextButton(onClick = { controlsShown = true }, modifier.fillMaxWidth()) {
-            Text(value.toString(), textAlign = TextAlign.Center)
-        }
-        DropdownMenu(expanded = controlsShown, onDismissRequest = { controlsShown = false }) {
-            increments.forEach { increment ->
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    TextButton(onClick = { onValueChange(value - increment) }) { Text("-") }
-                    Text(increment.toString())
-                    TextButton(onClick = { onValueChange(value + increment) }) { Text("+") }
-                }
-            }
-
         }
     }
 }

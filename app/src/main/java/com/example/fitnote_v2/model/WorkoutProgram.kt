@@ -19,7 +19,7 @@ data class Goal (
     val repMin: Int,
     val repMax: Int,
     val setCount: Int,
-    val weight: Int,
+    val weight: Float,
     val rest: Int
 )
 

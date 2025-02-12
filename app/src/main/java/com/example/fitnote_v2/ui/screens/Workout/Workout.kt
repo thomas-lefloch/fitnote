@@ -68,7 +68,17 @@ fun Workout(
                         exercise = workout.exercises[i],
                         onEditSet = { old, new -> onEditSet(workout.exercises[i], old, new) },
                         onCreateSet = {
-                            val newSet = workout.exercises[i].sets.last().copy(completedAt = null)
+                            val newSet: Set
+                            if (workout.exercises[i].sets.size <= 0) {
+                                val goal = workout.exercises[i].goal
+                                newSet = Set(
+                                    repCount = goal.repMax,
+                                    rest =  goal.rest,
+                                    weight = goal.weight
+                                )
+                            } else {
+                                newSet = workout.exercises[i].sets.last().copy(completedAt = null)
+                            }
                             onCreateSet(workout.exercises[i], newSet)
                         },
                     )

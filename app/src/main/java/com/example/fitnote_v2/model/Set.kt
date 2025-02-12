@@ -1,4 +1,4 @@
-package com.example.fitnote_v2.data
+package com.example.fitnote_v2.model
 
 import java.util.Date
 

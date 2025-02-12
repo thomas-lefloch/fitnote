@@ -26,6 +26,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -38,21 +39,22 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
 import com.example.fitnote_v2.R
-import com.example.fitnote_v2.data.Exercise
-import com.example.fitnote_v2.data.Goal
-import com.example.fitnote_v2.data.Set
+import com.example.fitnote_v2.model.Exercise
+import com.example.fitnote_v2.model.Goal
+import com.example.fitnote_v2.model.Set
 import com.example.fitnote_v2.ui.components.IncrementalControls
 import java.util.Date
 
 
 @Composable
 fun ExerciseCard(
-    exercise: Exercise, modifier: Modifier = Modifier
+    exercise: Exercise,
+    modifier: Modifier = Modifier,
+    onEditSet: (old: Set, new: Set) -> Boolean,
+    onCreateSet: (new: Set) -> Boolean
 ) {
-    // FIXME: isExpanded's value is reset when is goes out of screen
-    var isExpanded by remember { mutableStateOf(true) }
-    // FIXME: data is reset when the component goes out of screen,  user data will be correctly manage when I start implementing the database
-    var sets by remember { mutableStateOf(exercise.sets) }
+
+    var isExpanded by rememberSaveable { mutableStateOf(true) }
 
     val horizontalCardPadding = 16.dp
 
@@ -100,19 +102,20 @@ fun ExerciseCard(
 
             HorizontalDivider(thickness = .5.dp)
 
-            sets.forEachIndexed { i, set ->
+            exercise.sets.forEachIndexed { i, set ->
                 SetRow(set, horizontalCardPadding,
-                    onSetModification = { sets = sets.toMutableList().apply { this[i] = it } },
+                    onSetModification = { onEditSet(set, it) },
                     onSetCompletion = {
-                        sets = sets.toMutableList().apply {
-                            this[i] = set.copy(completedAt = Date(System.currentTimeMillis()))
-                        }
+                        onEditSet(set, set.copy(completedAt = Date(System.currentTimeMillis())))
                     }
                 )
             }
 
             OutlinedButton(
-                onClick = { sets += exercise.sets[exercise.sets.size - 1].copy(completedAt = null) },
+                onClick = {
+                    val newSet = exercise.sets[exercise.sets.size - 1].copy(completedAt = null)
+                    onCreateSet(newSet)
+                },
                 modifier = Modifier.fillMaxWidth(),
                 shape = MaterialTheme.shapes.small,
             ) {
@@ -264,12 +267,14 @@ fun ExerciseCardPreview() {
                     weight = 0,
                     rest = 90
                 ),
-                sets = listOf(
+                sets = mutableListOf(
                     Set(repCount = 8, weight = 0f, rest = 90),
                     Set(repCount = 7, weight = 0f, rest = 90),
                     Set(repCount = 6, weight = 0f, rest = 90)
                 )
-            )
+            ),
+            onEditSet= {old, new -> true},
+            onCreateSet = {true}
         )
     }
 }

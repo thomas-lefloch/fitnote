@@ -20,8 +20,8 @@ import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import com.example.fitnote_v2.R
-import com.example.fitnote_v2.data.Exercise
-import com.example.fitnote_v2.data.Goal
+import com.example.fitnote_v2.model.Exercise
+import com.example.fitnote_v2.model.Goal
 import com.example.fitnote_v2.ui.components.DefaultDialog
 
 @Composable

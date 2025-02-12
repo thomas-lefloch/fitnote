@@ -1,10 +1,10 @@
-package com.example.fitnote_v2.data
+package com.example.fitnote_v2.model
 
 data class WorkoutProgram(
     val id: String = "",
     val name: String,
     val description: String,
-    var exercises: List<Exercise> = emptyList(),
+    var exercises: MutableList<Exercise> = mutableListOf(),
 )
 
 data class Exercise(
@@ -12,7 +12,7 @@ data class Exercise(
     val name: String,
     val note: String,
     val goal: Goal,
-    var sets: List<Set> = emptyList()
+    var sets: MutableList<Set> = mutableListOf()
 )
 
 data class Goal (
@@ -23,12 +23,11 @@ data class Goal (
     val rest: Int
 )
 
-// TODO: implement theses
 fun WorkoutProgram.calculateEstimatedDuration(): Int {
-    return 30
+    return exercises.size * 6 // TODO: proper implementation
 }
 
-// TODO: rename
+// TODO: rename & implement
 fun WorkoutProgram.getDateLastDone(): String {
     return "3 days ago"
 }

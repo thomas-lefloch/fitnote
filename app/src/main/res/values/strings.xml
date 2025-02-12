@@ -9,6 +9,7 @@
     <string name="never">Never</string>
     <string name="duration_estimate_minutes">~ %1$d minutes</string>
     <string name="no_workouts">You don\'t have any workout yet. Create on by clicking the button below</string>
+    <string name="no_exercises">You don\'t have any exercise yet. Create on by clicking the button below</string>
 
     <string name="dialog_title_new_workout">Your workout</string>
 

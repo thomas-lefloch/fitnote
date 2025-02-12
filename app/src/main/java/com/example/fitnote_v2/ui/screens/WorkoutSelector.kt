@@ -43,9 +43,9 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import com.example.fitnote_v2.R
-import com.example.fitnote_v2.data.WorkoutProgram
-import com.example.fitnote_v2.data.calculateEstimatedDuration
-import com.example.fitnote_v2.data.getDateLastDone
+import com.example.fitnote_v2.model.WorkoutProgram
+import com.example.fitnote_v2.model.calculateEstimatedDuration
+import com.example.fitnote_v2.model.getDateLastDone
 import com.example.fitnote_v2.ui.components.ConfirmDialog
 import com.example.fitnote_v2.ui.components.DefaultDialog
 
@@ -53,9 +53,10 @@ import com.example.fitnote_v2.ui.components.DefaultDialog
 fun WorkoutSelector(
     modifier: Modifier = Modifier,
     workouts: List<WorkoutProgram>,
-    onCreateWorkout: (WorkoutProgram) -> Unit,
-    onDeleteWorkout: (WorkoutProgram) -> Unit,
-    onChooseWorkout: (WorkoutProgram) -> Unit,
+    onCreateWorkout: (WorkoutProgram) -> Boolean,
+    onDeleteWorkout: (WorkoutProgram) -> Boolean,
+    onChooseWorkout: (Int) -> Unit,
+    onEditWorkout: (old: WorkoutProgram, new: WorkoutProgram) -> Boolean
 ) {
     var addingWorkout by remember { mutableStateOf(false) }
     var workoutToDelete by remember { mutableStateOf<WorkoutProgram?>(null) }
@@ -88,7 +89,7 @@ fun WorkoutSelector(
             } else {
                 items(workouts.size) { i ->
                     WorkoutCard(workouts[i],
-                        onChooseWorkout = onChooseWorkout,
+                        onChooseWorkout = { onChooseWorkout(i) },
                         onEditWorkout = { workoutToEdit = workouts[i] },
                         onDeleteWorkout = { workoutToDelete = workouts[i] }
                     )
@@ -96,7 +97,6 @@ fun WorkoutSelector(
                 }
             }
         }
-
 
         Button(
             onClick = { addingWorkout = true },
@@ -116,11 +116,17 @@ fun WorkoutSelector(
 
     if (addingWorkout) {
         WorkoutDialog(onDismiss = { addingWorkout = false },
-            onConfirmWorkout = { onCreateWorkout(it); addingWorkout = false })
+            onConfirmWorkout = {
+                onCreateWorkout(it)
+                addingWorkout = false
+            })
     } else if (workoutToDelete != null) {
         ConfirmDialog(
             onDismissRequest = { workoutToDelete = null },
-            onConfirmRequest = { onDeleteWorkout(workoutToDelete!!); workoutToDelete = null },
+            onConfirmRequest = {
+                onDeleteWorkout(workoutToDelete!!)
+                workoutToDelete = null
+            },
             title = stringResource(R.string.delete_workout_confirmation_title),
             content = stringResource(
                 R.string.delete_workout_confirmation_message, workoutToDelete!!.name
@@ -130,7 +136,8 @@ fun WorkoutSelector(
     } else if (workoutToEdit != null) {
         WorkoutDialog(
             onDismiss = { workoutToEdit = null },
-            onConfirmWorkout = {/*TODO: update workout waiting for database impl*/
+            onConfirmWorkout = {
+                onEditWorkout(workoutToEdit!!, it)
                 workoutToEdit = null
             },
             workout = workoutToEdit
@@ -143,9 +150,9 @@ fun WorkoutSelector(
 fun WorkoutCard(
     workout: WorkoutProgram,
     modifier: Modifier = Modifier,
-    onEditWorkout: (WorkoutProgram) -> Unit,
-    onDeleteWorkout: (WorkoutProgram) -> Unit,
-    onChooseWorkout: (WorkoutProgram) -> Unit,
+    onEditWorkout: () -> Unit,
+    onDeleteWorkout: () -> Unit,
+    onChooseWorkout: () -> Unit,
 ) {
     var showMenu by remember { mutableStateOf(false) }
 
@@ -174,7 +181,7 @@ fun WorkoutCard(
                                 Icon(Icons.Default.Edit, null)
                             },
                             onClick = {
-                                onEditWorkout(workout)
+                                onEditWorkout()
                                 showMenu = false
                             })
                         DropdownMenuItem(text = { Text(stringResource(R.string.delete_workout)) },
@@ -186,7 +193,7 @@ fun WorkoutCard(
                                 )
                             },
                             onClick = {
-                                onDeleteWorkout(workout)
+                                onDeleteWorkout()
                                 showMenu = false
                             })
                     }
@@ -245,7 +252,7 @@ fun WorkoutCard(
                     style = MaterialTheme.typography.labelSmall,
                 )
                 Button(
-                    onClick = { onChooseWorkout(workout) },
+                    onClick = { onChooseWorkout() },
                     shape = MaterialTheme.shapes.small,
                 ) {
                     Text(

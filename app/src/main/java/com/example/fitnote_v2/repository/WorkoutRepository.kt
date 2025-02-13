@@ -35,11 +35,9 @@ object WorkoutRepository {
         return exercise.sets.add(set)
     }
 
-    fun editSet(exercise: Exercise, old: Set, new: Set): Boolean {
+    fun editSet(exercise: Exercise, oldSetIndex: Int, new: Set): Boolean {
         // maybe find by id instead of index ? (when sqlite)
-        val i = exercise.sets.indexOf(old)
-        if (i == -1) return false
-        exercise.sets[i] = new
+        exercise.sets[oldSetIndex] = new
         return true
     }
 }

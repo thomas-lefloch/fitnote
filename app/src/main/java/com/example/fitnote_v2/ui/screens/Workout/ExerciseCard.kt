@@ -49,7 +49,7 @@ import java.util.Date
 fun ExerciseCard(
     exercise: Exercise,
     modifier: Modifier = Modifier,
-    onEditSet: (old: Set, new: Set) -> Boolean,
+    onEditSet: (oldIndex: Int, new: Set) -> Boolean,
     onCreateSet: (new: Set) -> Boolean
 ) {
 
@@ -101,11 +101,11 @@ fun ExerciseCard(
 
             HorizontalDivider(thickness = .5.dp)
 
-            exercise.sets.forEachIndexed { _, set ->
+            exercise.sets.forEachIndexed { i, set ->
                 SetRow(set, horizontalCardPadding,
-                    onSetModification = { onEditSet(set, it) },
+                    onSetModification = { onEditSet(i, it) },
                     onSetCompletion = {
-                        onEditSet(set, set.copy(completedAt = Date(System.currentTimeMillis())))
+                        onEditSet(i, set.copy(completedAt = Date(System.currentTimeMillis())))
                     }
                 )
             }

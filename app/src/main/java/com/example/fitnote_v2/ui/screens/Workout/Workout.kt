@@ -35,7 +35,7 @@ fun Workout(
     modifier: Modifier = Modifier,
     onCreateExercise: (Exercise) -> Boolean,
     onCreateSet: (exercise: Exercise, new: Set) -> Boolean,
-    onEditSet: (exercise: Exercise, old: Set, new: Set) -> Boolean,
+    onEditSet: (exercise: Exercise, oldSetIndex: Int, new: Set) -> Boolean,
 ) {
     var showExerciseCreationDialog by remember { mutableStateOf(false) }
 
@@ -66,7 +66,7 @@ fun Workout(
                 items(workout.exercises.size) { i ->
                     ExerciseCard(
                         exercise = workout.exercises[i],
-                        onEditSet = { old, new -> onEditSet(workout.exercises[i], old, new) },
+                        onEditSet = { oldIndex, new -> onEditSet(workout.exercises[i], oldIndex, new) },
                         onCreateSet = {
                             onCreateSet(workout.exercises[i], it)
                         },

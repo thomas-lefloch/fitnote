@@ -25,7 +25,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
-import androidx.compose.runtime.remember
 import androidx.compose.runtime.saveable.rememberSaveable
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -102,7 +101,7 @@ fun ExerciseCard(
 
             HorizontalDivider(thickness = .5.dp)
 
-            exercise.sets.forEachIndexed { i, set ->
+            exercise.sets.forEachIndexed { _, set ->
                 SetRow(set, horizontalCardPadding,
                     onSetModification = { onEditSet(set, it) },
                     onSetCompletion = {
@@ -113,7 +112,15 @@ fun ExerciseCard(
 
             OutlinedButton(
                 onClick = {
-                    val newSet = exercise.sets[exercise.sets.size - 1].copy(completedAt = null)
+                    val newSet = if (exercise.sets.size <= 0) {
+                        Set(
+                            repCount = exercise.goal.repMax,
+                            rest = exercise.goal.rest,
+                            weight = exercise.goal.weight
+                        )
+                    } else {
+                        exercise.sets.last().copy(completedAt = null)
+                    }
                     onCreateSet(newSet)
                 },
                 modifier = Modifier.fillMaxWidth(),
@@ -159,10 +166,12 @@ private fun ExpandableCardHeader(
                 )
             }
         }
-        Text(
-            text = description,
-            style = MaterialTheme.typography.bodyMedium
-        )
+        if (description.isNotEmpty()) {
+            Text(
+                text = description,
+                style = MaterialTheme.typography.bodyMedium
+            )
+        }
         Row(modifier = Modifier.padding(top = 4.dp)) {
             Text(
                 text = "Goal: ",
@@ -264,7 +273,7 @@ fun ExerciseCardPreview() {
                     repMin = 6,
                     repMax = 10,
                     setCount = 3,
-                    weight = 0,
+                    weight = 0.1f,
                     rest = 90
                 ),
                 sets = mutableListOf(
@@ -273,8 +282,8 @@ fun ExerciseCardPreview() {
                     Set(repCount = 6, weight = 0f, rest = 90)
                 )
             ),
-            onEditSet= {old, new -> true},
-            onCreateSet = {true}
+            onEditSet = { _, _ -> true },
+            onCreateSet = { true }
         )
     }
 }

@@ -55,7 +55,7 @@ fun ExerciseDialog(
                 repMin = repMin.toInt(),
                 repMax = repMax.toInt(),
                 setCount = setCount.toInt(),
-                weight = weight.toIntOrNull() ?: 0, // TODO: proper support for bodyweight exercise
+                weight = weight.toFloatOrNull() ?: 0f, // TODO: proper support for bodyweight exercise
                 rest = rest.toInt()
             )
             onConfirm(Exercise(name = name, note = note, goal = goal))

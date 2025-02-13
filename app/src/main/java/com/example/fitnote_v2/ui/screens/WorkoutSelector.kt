@@ -202,12 +202,15 @@ fun WorkoutCard(
 
             Spacer(modifier = Modifier.height(4.dp))
 
-            Text(
-                text = workout.description,
-                fontSize = 14.sp,
-                maxLines = 2,
-                overflow = TextOverflow.Ellipsis
-            )
+            if(workout.description.isNotEmpty()) {
+                Text(
+                    text = workout.description,
+                    fontSize = 14.sp,
+                    maxLines = 2,
+                    overflow = TextOverflow.Ellipsis
+                )
+            }
+
 
             Spacer(modifier = Modifier.height(16.dp))
 
@@ -244,13 +247,13 @@ fun WorkoutCard(
 
             Row(
                 modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
+                horizontalArrangement = Arrangement.End,
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Text(
-                    text = stringResource(R.string.last_done, workout.getDateLastDone()),
-                    style = MaterialTheme.typography.labelSmall,
-                )
+//                Text(
+//                    text = stringResource(R.string.last_done, workout.getDateLastDone()),
+//                    style = MaterialTheme.typography.labelSmall,
+//                )
                 Button(
                     onClick = { onChooseWorkout() },
                     shape = MaterialTheme.shapes.small,
